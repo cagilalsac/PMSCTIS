@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace APP.Domain
+namespace APP.Projects.Domain
 {
     public class ProjectsDb : DbContext
     {

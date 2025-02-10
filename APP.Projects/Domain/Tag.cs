@@ -1,7 +1,7 @@
 ﻿using CORE.APP.Domain;
 using System.ComponentModel.DataAnnotations;
 
-namespace APP.Domain
+namespace APP.Projects.Domain
 {
     public class Tag : Entity
     {
