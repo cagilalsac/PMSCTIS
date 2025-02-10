@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMSCTIS.ServiceDefaults", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CORE", "CORE\CORE.csproj", "{0BE9DD20-139E-47EF-8BBC-75395946F85D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APP", "APP\APP.csproj", "{1302DB44-D505-46B2-8955-7720C125D465}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APP.Projects", "APP.Projects\APP.Projects.csproj", "{1302DB44-D505-46B2-8955-7720C125D465}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
