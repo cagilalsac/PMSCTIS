@@ -22,7 +22,11 @@ namespace APP.Projects.Features.Tags
         public Task<IQueryable<TagQueryResponse>> Handle(TagQueryRequest request, CancellationToken cancellationToken)
         {
             // select Id, Name from Tags
-            
+            return Task.FromResult(_projectsDb.Tags.OrderBy(tag => tag.Name).Select(tag => new TagQueryResponse()
+            {
+                Id = tag.Id,
+                Name = tag.Name
+            }));
         }
     }
 }
