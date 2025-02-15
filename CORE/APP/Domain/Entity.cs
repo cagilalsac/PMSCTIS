@@ -1,26 +1,44 @@
 ﻿namespace CORE.APP.Domain
 {
+    /// <summary>
+    /// Abstract base class for all entities.
+    /// </summary>
     public abstract class Entity
     {
+        // Field to store the entity's ID.
         //private int id; // variable, field
 
+        // Method to get the entity's ID.
         //public int GetId() // function, method, behavior
         //{
         //    return id;
         //}
 
+        // Method to set the entity's ID.
         //public void SetId(int id)
         //{
         //    this.id = id;
         //}
 
-        public int Id { get; set; } // property, Entity entity = new Entity() { Id = 17 };
 
+
+        /// <summary>
+        /// Gets or sets the ID of the entity.
+        /// </summary>
+        public int Id { get; set; } // Property to get or set the entity's ID.
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Entity"/> class.
+        /// </summary>
         protected Entity()
         {
         }
 
-        protected Entity(int id) // Entity entity = new Entity(19);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Entity"/> class with a specified ID.
+        /// </summary>
+        /// <param name="id">The ID of the entity.</param>
+        protected Entity(int id) // Constructor to initialize the entity with an ID.
         {
             Id = id;
         }

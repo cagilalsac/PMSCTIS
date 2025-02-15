@@ -5,35 +5,49 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Projects.Controllers
 {
+    /// <summary>
+    /// API controller for handling tag-related requests.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class TagsController : ControllerBase
     {
         private readonly IMediator _mediator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TagsController"/> class with the specified mediator.
+        /// </summary>
+        /// <param name="mediator">The mediator to be used for sending requests.</param>
         public TagsController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        // GET: api/Tags
+        /// <summary>
+        /// Handles GET requests to retrieve all tags.
+        /// </summary>
+        /// <returns>A list of tags if available; otherwise, NoContent.</returns>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             var response = await _mediator.Send(new TagQueryRequest());
             var list = await response.ToListAsync();
-            if (list.Any()) //if (list.Count > 0)
+            if (list.Any()) // Check if the list is not empty.
                 return Ok(list);
             return NoContent();
         }
 
-        // GET: api/Tags/13
+        /// <summary>
+        /// Handles GET requests to retrieve a specific tag by ID.
+        /// </summary>
+        /// <param name="id">The ID of the tag to retrieve.</param>
+        /// <returns>The tag if found; otherwise, NoContent.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var response = await _mediator.Send(new TagQueryRequest());
             var item = await response.SingleOrDefaultAsync(i => i.Id == id);
-            if (item is not null) //if (item != null)
+            if (item is not null) // if (item != null)
                 return Ok(item);
             return NoContent();
         }
