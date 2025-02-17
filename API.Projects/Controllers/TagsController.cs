@@ -51,5 +51,14 @@ namespace API.Projects.Controllers
                 return Ok(item);
             return NoContent();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(TagCreateRequest request)
+        {
+            var response = await _mediator.Send(request);
+
+            // TODO: response success check!
+            return Ok(response);
+        }
     }
 }
