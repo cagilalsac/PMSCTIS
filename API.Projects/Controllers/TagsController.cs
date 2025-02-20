@@ -65,9 +65,9 @@ namespace API.Projects.Controllers
                 var response = await _mediator.Send(request);
 
                 if (response.IsSuccessful)
-                    return Ok(response); // 200
+                    return Ok(response); // 200 Http Status Code
 
-                return BadRequest(response); // 400
+                return BadRequest(response); // 400 Http Status Code
             }
             return BadRequest(ModelState);
         }
@@ -85,9 +85,9 @@ namespace API.Projects.Controllers
                 var response = await _mediator.Send(request);
 
                 if (response.IsSuccessful)
-                    return Ok(response); // 200
+                    return Ok(response);
 
-                return BadRequest(response); // 400
+                return BadRequest(response);
             }
             return BadRequest(ModelState);
         }
@@ -105,9 +105,9 @@ namespace API.Projects.Controllers
                 var response = await _mediator.Send(new TagDeleteRequest() { Id = id });
 
                 if (response.IsSuccessful)
-                    return Ok(response); // 200
+                    return Ok(response);
 
-                return BadRequest(response); // 400
+                return BadRequest(response);
             }
             return BadRequest(ModelState);
         }

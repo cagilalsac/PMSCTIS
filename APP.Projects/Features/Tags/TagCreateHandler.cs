@@ -44,9 +44,9 @@ namespace APP.Projects.Features.Tags
             // Add the tag to the database context
             // Way 1: does not insert relational data
             //_projectsDb.Entry(tag).State = EntityState.Added;
-            // Way 2:
+            // Way 2: inserts relational data
             _projectsDb.Add(tag);
-            // Way 3:
+            // Way 3: inserts relational data
             _projectsDb.Tags.Add(tag);
 
             // Save changes asynchronously (unit of work pattern)
