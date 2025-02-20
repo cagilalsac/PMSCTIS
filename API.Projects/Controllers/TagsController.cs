@@ -52,13 +52,64 @@ namespace API.Projects.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Handles POST requests to insert a specific tag.
+        /// </summary>
+        /// <param name="request">The tag request to insert.</param>
+        /// <returns>Success if operation succeeds; otherwise, BadRequest.</returns>
         [HttpPost]
         public async Task<IActionResult> Post(TagCreateRequest request)
         {
-            var response = await _mediator.Send(request);
+            if (ModelState.IsValid)
+            {
+                var response = await _mediator.Send(request);
 
-            // TODO: response success check!
-            return Ok(response);
+                if (response.IsSuccessful)
+                    return Ok(response); // 200
+
+                return BadRequest(response); // 400
+            }
+            return BadRequest(ModelState);
+        }
+
+        /// <summary>
+        /// Handles PUT requests to update a specific tag.
+        /// </summary>
+        /// <param name="request">The tag request to update.</param>
+        /// <returns>Success if operation succeeds; otherwise, BadRequest.</returns>
+        [HttpPut]
+        public async Task<IActionResult> Put(TagUpdateRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _mediator.Send(request);
+
+                if (response.IsSuccessful)
+                    return Ok(response); // 200
+
+                return BadRequest(response); // 400
+            }
+            return BadRequest(ModelState);
+        }
+
+        /// <summary>
+        /// Handles DELETE requests to delete a specific tag by ID.
+        /// </summary>
+        /// <param name="id">The tag ID to delete.</param>
+        /// <returns>Success if operation succeeds; otherwise, BadRequest.</returns>
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _mediator.Send(new TagDeleteRequest() { Id = id });
+
+                if (response.IsSuccessful)
+                    return Ok(response); // 200
+
+                return BadRequest(response); // 400
+            }
+            return BadRequest(ModelState);
         }
     }
 }
