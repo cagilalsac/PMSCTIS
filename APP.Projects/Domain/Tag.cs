@@ -15,5 +15,7 @@ namespace APP.Projects.Domain
         [Required]
         [StringLength(150)]
         public string Name { get; set; }
+
+        public List<ProjectTag> ProjectTags { get; set; } = new List<ProjectTag>(); // navigational property
     }
 }
