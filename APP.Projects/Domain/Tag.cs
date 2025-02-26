@@ -16,6 +16,10 @@ namespace APP.Projects.Domain
         [StringLength(150)]
         public string Name { get; set; }
 
-        public List<ProjectTag> ProjectTags { get; set; } = new List<ProjectTag>(); // navigational property
+        /// <summary>
+        /// Gets or sets the collection of relational project tags.
+        /// This is a navigational property representing the projects associated with the tag.
+        /// </summary>
+        public List<ProjectTag> ProjectTags { get; set; } = new List<ProjectTag>();
     }
 }

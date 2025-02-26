@@ -2,12 +2,35 @@
 
 namespace APP.Projects.Domain
 {
+    /// <summary>
+    /// Represents a linking entity between Project and Tag entities.
+    /// Inherits from the base class Entity.
+    /// </summary>
     public class ProjectTag : Entity
     {
-        public int ProjectId { get; set; } // foreign key
-        public Project Project { get; set; } // navigational property
+        /// <summary>
+        /// Gets or sets the project ID.
+        /// This field is a foreign key linking to the Project entity.
+        /// </summary>
+        public int ProjectId { get; set; }
 
-        public int TagId { get; set; } // foreign key
-        public Tag Tag { get; set; } // navigational property
+        /// <summary>
+        /// Gets or sets the project associated with the project tag.
+        /// This is a navigational property.
+        /// </summary>
+        public Project Project { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tag ID.
+        /// This field is a foreign key linking to the Tag entity.
+        /// </summary>
+        public int TagId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tag associated with the project tag.
+        /// This is a navigational property.
+        /// </summary>
+        public Tag Tag { get; set; }
     }
+
 }

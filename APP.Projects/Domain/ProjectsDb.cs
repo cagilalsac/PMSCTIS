@@ -10,10 +10,17 @@ namespace APP.Projects.Domain
         /// <summary>
         /// Gets or sets the Tags DbSet, which represents the collection of all Tag entities in the context.
         /// </summary>
-        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Tag> Tags { get; set; } // Tags table in the database
 
-        public DbSet<Project> Projects { get; set; }
-        public DbSet<ProjectTag> ProjectTags { get; set; }
+        /// <summary>
+        /// Gets or sets the Projects DbSet, which represents the collection of all Project entities in the context.
+        /// </summary>
+        public DbSet<Project> Projects { get; set; } // Projects table in the database
+
+        /// <summary>
+        /// Gets or sets the ProjectTags DbSet, which represents the collection of all ProjectTag entities in the context.
+        /// </summary>
+        public DbSet<ProjectTag> ProjectTags { get; set; } // ProjectTags table in the database
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectsDb"/> class with the specified options.
