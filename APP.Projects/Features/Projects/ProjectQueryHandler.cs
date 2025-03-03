@@ -25,7 +25,8 @@ namespace APP.Projects.Features.Projects
 
         public Task<IQueryable<ProjectQueryResponse>> Handle(ProjectQueryRequest request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(_projectsDb.Projects.OrderBy(p => p.Name).ThenByDescending(p => p.Version).Select(p => new ProjectQueryResponse()
+            return Task.FromResult(_projectsDb.Projects.OrderBy(p => p.Name).ThenByDescending(p => p.Version).Select(p => new ProjectQueryResponse() 
+            // optional: AutoMapper can be used for mapping operations
             {
                 Id = p.Id,
                 Name = p.Name,
