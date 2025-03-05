@@ -21,7 +21,7 @@ namespace APP.Projects.Features.Projects
         public List<int> TagIds { get; set; }
     }
 
-    public class ProjectCreateHandler : 
+    public class ProjectCreateHandler
     {
     }
 }

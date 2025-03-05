@@ -33,6 +33,10 @@ namespace APP.Projects.Domain
         // The connection string should be defined in appsettings.json of the API Project.
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
+        //    // SQLite:
+        //    base.OnConfiguring(optionsBuilder.UseSqlite("data source=PMSCTISProjectsDB"));
+
+        //    // SQL Server LocalDB:
         //    base.OnConfiguring(optionsBuilder.UseSqlServer("server=(localdb)\\mssqllocaldb;database=PMSCTISProjectsDB;trusted_connection=true;"));
         //}
     }
