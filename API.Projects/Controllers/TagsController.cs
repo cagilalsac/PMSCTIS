@@ -100,16 +100,12 @@ namespace API.Projects.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            if (ModelState.IsValid)
-            {
-                var response = await _mediator.Send(new TagDeleteRequest() { Id = id });
+            var response = await _mediator.Send(new TagDeleteRequest() { Id = id });
 
-                if (response.IsSuccessful)
-                    return Ok(response);
+            if (response.IsSuccessful)
+                return Ok(response);
 
-                return BadRequest(response);
-            }
-            return BadRequest(ModelState);
+            return BadRequest(response);
         }
     }
 }
