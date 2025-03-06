@@ -88,99 +88,99 @@ namespace API.Projects.Controllers
             }
         }
 
-        ///// <summary>
-        ///// Creates a new project.
-        ///// </summary>
-        ///// <param name="request">The project creation request containing necessary details.</param>
-        ///// <returns>The result of the creation operation.</returns>
-        //[HttpPost]
-        //public async Task<IActionResult> Post(ProjectCreateRequest request)
-        //{
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            var response = await _mediator.Send(request);
+        /// <summary>
+        /// Creates a new project.
+        /// </summary>
+        /// <param name="request">The project creation request containing necessary details.</param>
+        /// <returns>The result of the creation operation.</returns>
+        [HttpPost]
+        public async Task<IActionResult> Post(ProjectCreateRequest request)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var response = await _mediator.Send(request);
 
-        //            if (response.IsSuccessful)
-        //            {
-        //                // Optionally, CreatedAtAction(nameof(Get), new { id = response.Id }, response) can be returned.
-        //                return Ok(response);
-        //            }
+                    if (response.IsSuccessful)
+                    {
+                        // Optionally, CreatedAtAction(nameof(Get), new { id = response.Id }, response) can be returned.
+                        return Ok(response);
+                    }
 
-        //            ModelState.AddModelError("ProjectsPost", response.Message);
-        //        }
+                    ModelState.AddModelError("ProjectsPost", response.Message);
+                }
 
-        //        return BadRequest(new CommandResponse(false,
-        //            string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
-        //    }
-        //    catch (Exception exception)
-        //    {
-        //        _logger.LogError($"ProjectsPost Exception: {exception.Message}");
-        //        return StatusCode(StatusCodes.Status500InternalServerError,
-        //            new CommandResponse(false, "An exception occurred during ProjectsPost."));
-        //    }
-        //}
+                return BadRequest(new CommandResponse(false,
+                    string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError($"ProjectsPost Exception: {exception.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new CommandResponse(false, "An exception occurred during ProjectsPost."));
+            }
+        }
 
-        ///// <summary>
-        ///// Updates an existing project.
-        ///// </summary>
-        ///// <param name="request">The request containing the project update details.</param>
-        ///// <returns>A response indicating the success or failure of the update operation.</returns>
-        //[HttpPut]
-        //public async Task<IActionResult> Put(ProjectUpdateRequest request)
-        //{
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            var response = await _mediator.Send(request);
-        //            if (response.IsSuccessful)
-        //            {
-        //                // Optionally, NoContent() can be returned.
-        //                return Ok(response);
-        //            }
-        //            ModelState.AddModelError("ProjectsPut", response.Message);
-        //        }
+        /// <summary>
+        /// Updates an existing project.
+        /// </summary>
+        /// <param name="request">The request containing the project update details.</param>
+        /// <returns>A response indicating the success or failure of the update operation.</returns>
+        [HttpPut]
+        public async Task<IActionResult> Put(ProjectUpdateRequest request)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var response = await _mediator.Send(request);
+                    if (response.IsSuccessful)
+                    {
+                        // Optionally, NoContent() can be returned.
+                        return Ok(response);
+                    }
+                    ModelState.AddModelError("ProjectsPut", response.Message);
+                }
 
-        //        return BadRequest(new CommandResponse(false,
-        //            string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
-        //    }
-        //    catch (Exception exception)
-        //    {
-        //        _logger.LogError($"ProjectsPut Exception: {exception.Message}");
-        //        return StatusCode(StatusCodes.Status500InternalServerError,
-        //            new CommandResponse(false, "An exception occurred during ProjectsPut."));
-        //    }
-        //}
+                return BadRequest(new CommandResponse(false,
+                    string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError($"ProjectsPut Exception: {exception.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new CommandResponse(false, "An exception occurred during ProjectsPut."));
+            }
+        }
 
-        ///// <summary>
-        ///// Deletes a project by its ID.
-        ///// </summary>
-        ///// <param name="id">The ID of the project to be deleted.</param>
-        ///// <returns>A response indicating the success or failure of the deletion operation.</returns>
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    try
-        //    {
-        //        var response = await _mediator.Send(new ProjectDeleteRequest { Id = id });
-        //        if (response.IsSuccessful)
-        //        {
-        //            // Optionally, NoContent() can be returned.
-        //            return Ok(response);
-        //        }
+        /// <summary>
+        /// Deletes a project by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the project to be deleted.</param>
+        /// <returns>A response indicating the success or failure of the deletion operation.</returns>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var response = await _mediator.Send(new ProjectDeleteRequest { Id = id });
+                if (response.IsSuccessful)
+                {
+                    // Optionally, NoContent() can be returned.
+                    return Ok(response);
+                }
 
-        //        ModelState.AddModelError("ProjectsDelete", response.Message);
-        //        return BadRequest(new CommandResponse(false,
-        //            string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
-        //    }
-        //    catch (Exception exception)
-        //    {
-        //        _logger.LogError($"ProjectsDelete Exception: {exception.Message}");
-        //        return StatusCode(StatusCodes.Status500InternalServerError,
-        //            new CommandResponse(false, "An exception occurred during ProjectsDelete."));
-        //    }
-        //}
+                ModelState.AddModelError("ProjectsDelete", response.Message);
+                return BadRequest(new CommandResponse(false,
+                    string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError($"ProjectsDelete Exception: {exception.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new CommandResponse(false, "An exception occurred during ProjectsDelete."));
+            }
+        }
     }
 }

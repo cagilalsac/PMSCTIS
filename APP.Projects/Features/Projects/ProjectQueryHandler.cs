@@ -1,6 +1,8 @@
 ﻿using APP.Projects.Domain;
+using CORE.APP.Domain;
 using CORE.APP.Features;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace APP.Projects.Features.Projects
 {
@@ -41,6 +43,8 @@ namespace APP.Projects.Features.Projects
         /// Gets or sets the formatted version of the project as a string.
         /// </summary>
         public string VersionF { get; set; }
+
+        public List<int> TagIds { get; set; }
     }
 
     /// <summary>
@@ -66,6 +70,7 @@ namespace APP.Projects.Features.Projects
         public Task<IQueryable<ProjectQueryResponse>> Handle(ProjectQueryRequest request, CancellationToken cancellationToken)
         {
             return Task.FromResult(_projectsDb.Projects
+                .Include(p => p.ProjectTags).ThenInclude(pt => pt.Tag)
                 .OrderBy(p => p.Name)
                 .ThenByDescending(p => p.Version)
                 .Select(p => new ProjectQueryResponse()
@@ -77,7 +82,8 @@ namespace APP.Projects.Features.Projects
                     Description = p.Description,
                     Url = p.Url,
                     Version = p.Version,
-                    VersionF = p.Version.HasValue ? p.Version.Value.ToString("N1") : string.Empty
+                    VersionF = p.Version.HasValue ? p.Version.Value.ToString("N1") : string.Empty,
+                    TagIds = p.TagIds
                 }));
         }
     }
