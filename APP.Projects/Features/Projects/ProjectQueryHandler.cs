@@ -1,5 +1,4 @@
 ﻿using APP.Projects.Domain;
-using CORE.APP.Domain;
 using CORE.APP.Features;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
