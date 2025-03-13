@@ -54,6 +54,7 @@ namespace APP.Projects.Domain
             get => ProjectTags.Select(pt => pt.TagId).ToList();
             set => ProjectTags = value.Select(v => new ProjectTag() { TagId = v }).ToList();
         }
-    }
 
+        public List<Work> Works { get; set; } = new List<Work>();
+    }
 }

@@ -22,6 +22,8 @@ namespace APP.Projects.Domain
         /// </summary>
         public DbSet<ProjectTag> ProjectTags { get; set; } // ProjectTags table in the database
 
+        public DbSet<Work> Works { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectsDb"/> class with the specified options.
         /// </summary>
