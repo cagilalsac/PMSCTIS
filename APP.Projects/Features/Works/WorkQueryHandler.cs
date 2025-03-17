@@ -9,6 +9,7 @@ namespace APP.Projects.Features.Works
     public class WorkQueryRequest : Request, IRequest<IQueryable<WorkQueryResponse>>
     {
         public string Name { get; set; }
+        public int? ProjectId { get; set; }
     }
 
     public class WorkQueryResponse : QueryResponse
@@ -67,6 +68,8 @@ namespace APP.Projects.Features.Works
             // Way 2:
             if (!string.IsNullOrWhiteSpace(request.Name))
                 query = query.Where(w => w.Name == request.Name);
+            if (request.ProjectId.HasValue)
+                query = query.Where(w => w.ProjectId == request.ProjectId);
 
             return Task.FromResult(query);
         }

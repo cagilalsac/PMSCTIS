@@ -3,12 +3,16 @@ using CORE.APP.Features;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace APP.Projects.Features.Tags
 {
     // Represents the request to create a new tag
     public class TagCreateRequest : Request, IRequest<CommandResponse>
     {
+        [JsonIgnore]
+        public override int Id { get => base.Id; set => base.Id = value; }
+
         // Tag name property - required and with a maximum length of 150 characters,
         // minimum length of 3 characters
         [Required, MaxLength(150), MinLength(3)]

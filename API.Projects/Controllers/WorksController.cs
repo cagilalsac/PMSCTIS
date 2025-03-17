@@ -59,6 +59,16 @@ namespace API.Projects.Controllers
             }
         }
 
+        [HttpPost("[action]")]
+        public async Task<IActionResult> GetWorksByFilter(WorkQueryRequest filter)
+        {
+            var response = await _mediator.Send(filter);
+            var list = await response.ToListAsync();
+            if (list.Any())
+                return Ok(list);
+            return NotFound(); // 404
+        }
+
 		//// POST: api/Works
   //      [HttpPost]
   //      public async Task<IActionResult> Post(WorkCreateRequest request)

@@ -25,7 +25,7 @@
         /// <summary>
         /// Gets or sets the ID of the entity.
         /// </summary>
-        public int Id { get; set; } // Property to get or set the entity's ID.
+        public virtual int Id { get; set; } // Property to get or set the entity's ID.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Entity"/> class.

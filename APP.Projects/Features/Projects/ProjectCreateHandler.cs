@@ -3,6 +3,7 @@ using CORE.APP.Features;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace APP.Projects.Features.Projects
 {
@@ -12,6 +13,9 @@ namespace APP.Projects.Features.Projects
     /// </summary>
     public class ProjectCreateRequest : Request, IRequest<CommandResponse>
     {
+        [JsonIgnore]
+        public override int Id { get => base.Id; set => base.Id = value; }
+
         /// <summary>
         /// Name of the project (required, must be between 5 and 200 characters).
         /// </summary>
