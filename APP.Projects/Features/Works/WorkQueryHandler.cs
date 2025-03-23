@@ -23,6 +23,30 @@ namespace APP.Projects.Features.Works
         /// Optional.
         /// </summary>
         public int? ProjectId { get; set; }
+
+        /// <summary>
+        /// The beginning value of the start date of the work to filter the start date by using range.
+        /// Optional.
+        /// </summary>
+        public DateTime? StartDateBegin { get; set; }
+
+        /// <summary>
+        /// The ending value of the start date of the work to filter the start date by using range.
+        /// Optional.
+        /// </summary>
+        public DateTime? StartDateEnd { get; set; }
+
+        /// <summary>
+        /// The beginning value of the due date of the work to filter the due date by using range.
+        /// Optional.
+        /// </summary>
+        public DateTime? DueDateBegin { get; set; }
+
+        /// <summary>
+        /// The ending value of the due date of the work to filter the due date by using range.
+        /// Optional.
+        /// </summary>
+        public DateTime? DueDateEnd { get; set; }
     }
 
     /// <summary>
@@ -98,39 +122,93 @@ namespace APP.Projects.Features.Works
         /// <returns>A queryable list of WorkQueryResponse objects.</returns>
         public Task<IQueryable<WorkQueryResponse>> Handle(WorkQueryRequest request, CancellationToken cancellationToken)
         {
-            // Fetch work items from the database and include related projects
-            var query = _projectsDb.Works.Include(w => w.Project)
+            // Way 1: Fetch work items from the database and include related projects
+            // then apply filters to the response based on request properties:
+            //var query = _projectsDb.Works.Include(w => w.Project)
+            //    .OrderByDescending(w => w.DueDate)
+            //    .ThenByDescending(w => w.StartDate)
+            //    .ThenBy(w => w.Name)
+            //    .Select(w => new WorkQueryResponse()
+            //    {
+            //        Name = w.Name,
+            //        Description = w.Description,
+            //        DueDate = w.DueDate,
+            //        DueDateF = w.DueDate.ToString("MM/dd/yyyy HH:mm:ss"),
+            //        StartDate = w.StartDate,
+            //        Id = w.Id,
+            //        StartDateF = w.StartDate.ToShortDateString(),
+            //        ProjectId = w.ProjectId,
+            //        ProjectName = w.Project.Name,
+            //        ProjectQueryResponse = w.Project != null ? new ProjectQueryResponse()
+            //        {
+            //            Description = w.Project.Description,
+            //            Id = w.Project.Id,
+            //            Name = w.Project.Name,
+            //            TagIds = w.Project.TagIds,
+            //            Url = w.Project.Url,
+            //            Version = w.Project.Version,
+            //            VersionF = w.Project.Version.HasValue ? w.Project.Version.Value.ToString("N1") : string.Empty
+            //        } : null
+            //    });
+            //if (!string.IsNullOrWhiteSpace(request.Name))
+            //    query = query.Where(w => w.Name == request.Name);
+            //if (request.ProjectId.HasValue)
+            //    query = query.Where(w => w.ProjectId == request.ProjectId);
+            //if (request.StartDateBegin.HasValue)
+            //    query = query.Where(w => w.StartDate >= request.StartDateBegin.Value); // or: query = query.Where(w => w.StartDate >= request.StartDateBegin)
+            //if (request.StartDateEnd.HasValue)
+            //    query = query.Where(w => w.StartDate <= request.StartDateEnd.Value);
+            //if (request.DueDateBegin.HasValue)
+            //    query = query.Where(w => w.DueDate >= request.DueDateBegin);
+            //if (request.DueDateEnd.HasValue)
+            //    query = query.Where(w => w.DueDate <= request.DueDateEnd);
+            
+
+
+            // Way 2: Fetch work items from the database and include related projects
+            // then apply filters to the entities based on request properties:
+            var entityQuery = _projectsDb.Works.Include(w => w.Project)
                 .OrderByDescending(w => w.DueDate)
                 .ThenByDescending(w => w.StartDate)
                 .ThenBy(w => w.Name)
-                .Select(w => new WorkQueryResponse()
-                {
-                    Name = w.Name,
-                    Description = w.Description,
-                    DueDate = w.DueDate,
-                    DueDateF = w.DueDate.ToString("MM/dd/yyyy HH:mm:ss"),
-                    StartDate = w.StartDate,
-                    Id = w.Id,
-                    StartDateF = w.StartDate.ToShortDateString(),
-                    ProjectId = w.ProjectId,
-                    ProjectName = w.Project.Name,
-                    ProjectQueryResponse = w.Project != null ? new ProjectQueryResponse()
-                    {
-                        Description = w.Project.Description,
-                        Id = w.Project.Id,
-                        Name = w.Project.Name,
-                        TagIds = w.Project.TagIds,
-                        Url = w.Project.Url,
-                        Version = w.Project.Version,
-                        VersionF = w.Project.Version.HasValue ? w.Project.Version.Value.ToString("N1") : string.Empty
-                    } : null
-                });
-
-            // Apply filters based on request properties:
+                .AsQueryable();
             if (!string.IsNullOrWhiteSpace(request.Name))
-                query = query.Where(w => w.Name == request.Name);
+                entityQuery = entityQuery.Where(w => w.Name == request.Name);
             if (request.ProjectId.HasValue)
-                query = query.Where(w => w.ProjectId == request.ProjectId);
+                entityQuery = entityQuery.Where(w => w.ProjectId == request.ProjectId);
+            if (request.StartDateBegin.HasValue)
+                entityQuery = entityQuery.Where(w => w.StartDate >= request.StartDateBegin);
+            if (request.StartDateEnd.HasValue)
+                entityQuery = entityQuery.Where(w => w.StartDate <= request.StartDateEnd);
+            if (request.DueDateBegin.HasValue)
+                entityQuery = entityQuery.Where(w => w.DueDate >= request.DueDateBegin);
+            if (request.DueDateEnd.HasValue)
+                entityQuery = entityQuery.Where(w => w.DueDate <= request.DueDateEnd);
+            var query = entityQuery.Select(w => new WorkQueryResponse()
+            {
+                Name = w.Name,
+                Description = w.Description,
+                DueDate = w.DueDate,
+                DueDateF = w.DueDate.ToString("MM/dd/yyyy HH:mm:ss"),
+                StartDate = w.StartDate,
+                Id = w.Id,
+                StartDateF = w.StartDate.ToShortDateString(),
+                ProjectId = w.ProjectId,
+                ProjectName = w.Project.Name,
+                ProjectQueryResponse = w.Project != null ? new ProjectQueryResponse()
+                {
+                    Description = w.Project.Description,
+                    Id = w.Project.Id,
+                    Name = w.Project.Name,
+                    TagIds = w.Project.TagIds,
+                    Url = w.Project.Url,
+                    Version = w.Project.Version,
+                    VersionF = w.Project.Version.HasValue ? w.Project.Version.Value.ToString("N1") : string.Empty
+                } : null
+            });
+
+
+
             return Task.FromResult(query);
         }
     }

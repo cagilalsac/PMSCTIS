@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace APP.Projects.Domain
 {
@@ -41,5 +42,35 @@ namespace APP.Projects.Domain
         //    // SQL Server LocalDB:
         //    base.OnConfiguring(optionsBuilder.UseSqlServer("server=(localdb)\\mssqllocaldb;database=PMSCTISProjectsDB;trusted_connection=true;"));
         //}
+    }
+
+
+
+    /// <summary>
+    /// Factory class for creating instances of <see cref="ProjectsDb"/> at design time
+    /// for solving problems about API scaffolding.
+    /// </summary>
+    public class ProjectsDbFactory : IDesignTimeDbContextFactory<ProjectsDb>
+    {
+        /// <summary>
+        /// Creates a new instance of the <see cref="ProjectsDb"/> database context.
+        /// </summary>
+        /// <param name="args">Command-line arguments.</param>
+        /// <returns>A new instance of <see cref="ProjectsDb"/>.</returns>
+        public ProjectsDb CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<ProjectsDb>();
+
+            // Configure the database connection
+            // Change the connection string based on your environment
+
+            // SQLite:
+            optionsBuilder.UseSqlServer("data source=PMSCTISProjectsDB");
+
+            // SQL Server LocalDB:
+            optionsBuilder.UseSqlServer("server=(localdb)\\mssqllocaldb;database=PMSCTISProjectsDB;trusted_connection=true;");
+
+            return new ProjectsDb(optionsBuilder.Options);
+        }
     }
 }
