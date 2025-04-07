@@ -1,6 +1,7 @@
 ﻿using APP.Users.Domain;
 using CORE.APP.Features;
 using System.Globalization;
+using System.Security.Claims;
 
 namespace APP.Users.Features
 {
@@ -21,6 +22,11 @@ namespace APP.Users.Features
         protected UsersDbHandler(UsersDb db) : base(new CultureInfo("en-US"))
         {
             _db = db;
+        }
+
+        protected virtual string CreateAccessToken(List<Claim> claims, DateTime expiration)
+        {
+            var signingKey = 
         }
     }
 }
