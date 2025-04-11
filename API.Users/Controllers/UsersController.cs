@@ -2,7 +2,6 @@
 using APP.Users.Features.Users;
 using CORE.APP.Features;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -158,41 +157,79 @@ namespace API.Users.Controllers
             }
         }
 
-        // Way 1:
-        //[HttpPost("[action]")] // api/Users/Token
-        // Way 2:
-        [HttpPost, Route("~/api/[action]")] // api/Token
+
+
+        /// <summary>
+        /// Authenticates the user and issues a JWT access token upon successful login.
+        /// </summary>
+        /// <param name="request">The login request containing username and password.</param>
+        /// <returns>
+        /// - 200 OK with a <see cref="TokenResponse"/> if authentication succeeds.  
+        /// - 400 Bad Request with a detailed <see cref="CommandResponse"/> if credentials are invalid or model state is incorrect.
+        /// </returns>
+        [HttpPost, Route("~/api/[action]")] // Resolves to: POST /api/Token
         public async Task<IActionResult> Token(TokenRequest request)
         {
+            // Validate incoming model (username & password) using data annotations
             if (ModelState.IsValid)
             {
+                // Use MediatR to send the TokenRequest to its handler
                 var response = await _mediator.Send(request);
+
+                // Return token if authentication was successful
                 if (response.IsSuccessful)
                     return Ok(response);
+
+                // Add error to model state if user credentials are invalid
                 ModelState.AddModelError("UsersToken", response.Message);
             }
-            return BadRequest(new CommandResponse(false, string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))));
+
+            // If we reach this point, model validation or authentication failed, get the error messages from the ModelState
+            var errorMessages = string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+
+            return BadRequest(new CommandResponse(false, errorMessages));
         }
 
-        // GET: api/Authorize
+        /// <summary>
+        /// Checks the current authentication status and returns user identity and role information.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint is useful for verifying that a token is valid and extracting identity claims.
+        /// </remarks>
+        /// <returns>
+        /// - 200 OK with a detailed <see cref="CommandResponse"/> if user is authenticated.  
+        /// - 400 Bad Request if user is not authenticated or token is invalid.
+        /// </returns>
         [HttpGet]
-        [Route("~/api/[action]")]
+        [Route("~/api/[action]")] // Resolves to: GET /api/Authorize
         public IActionResult Authorize()
         {
+            // Check if the request's identity (User) is authenticated
             var isAuthenticated = User.Identity.IsAuthenticated;
+
             if (isAuthenticated)
             {
+                // Extract username from identity
                 var userName = User.Identity.Name;
+
+                // Check if user has the "Admin" role
                 var isAdmin = User.IsInRole("Admin");
-                var role = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Role).Value;
-                var id = User.Claims.SingleOrDefault(c => c.Type == "Id").Value;
-                var message = "User authenticated. " +
-                    "User Name: " + userName + ", " +
-                    "Is Admin?: " + (isAdmin ? "Yes" : "No") + ", " +
-                    "Role: " + role + ", " +
-                    "Id: " + id;
+
+                // Read custom claims from JWT token
+                var role = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                var id = User.Claims.SingleOrDefault(c => c.Type == "Id")?.Value;
+
+                // Construct a friendly message to return to the caller
+                var message = $"User authenticated. " +
+                              $"User Name: {userName}, " +
+                              $"Is Admin?: {(isAdmin ? "Yes" : "No")}, " +
+                              $"Role: {role}, " +
+                              $"Id: {id}";
+
                 return Ok(new CommandResponse(true, message));
             }
+
+            // Token was not valid or missing — user is unauthenticated
             return BadRequest(new CommandResponse(false, "User not authenticated!"));
         }
     }

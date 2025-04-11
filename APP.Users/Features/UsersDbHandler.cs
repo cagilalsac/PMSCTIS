@@ -26,21 +26,37 @@ namespace APP.Users.Features
             _db = db;
         }
 
+        /// <summary>
+        /// Creates a signed JWT access token with the specified claims and expiration time.
+        /// </summary>
+        /// <param name="claims">A list of claims to include in the token.</param>
+        /// <param name="expiration">The expiration date and time of the token.</param>
+        /// <returns>A signed JWT access token as a string.</returns>
         protected virtual string CreateAccessToken(List<Claim> claims, DateTime expiration)
         {
+            // Create signing credentials using the app's symmetric security key and HMAC SHA256 algorithm
             var signingCredentials = new SigningCredentials(AppSettings.SigningKey, SecurityAlgorithms.HmacSha256Signature);
+
+            // Create the JWT token with issuer, audience, claims, and expiration
             var jwtSecurityToken = new JwtSecurityToken(AppSettings.Issuer, AppSettings.Audience, claims, DateTime.Now, expiration, signingCredentials);
+
+            // Write the token to a string
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             return jwtSecurityTokenHandler.WriteToken(jwtSecurityToken);
         }
 
+        /// <summary>
+        /// Generates a list of claims based on the provided user object.
+        /// </summary>
+        /// <param name="user">The user for whom to generate claims.</param>
+        /// <returns>A list of claims including Name, Role, and Id.</returns>
         protected virtual List<Claim> GetClaims(User user)
         {
             return new List<Claim>()
             {
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Role, user.Role.Name),
-                new Claim("Id", user.Id.ToString())
+                new Claim("Id", user.Id.ToString()) // Custom claim for the user's ID
             };
         }
     }
