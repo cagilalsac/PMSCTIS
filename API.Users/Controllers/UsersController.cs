@@ -2,6 +2,7 @@
 using APP.Users.Features.Users;
 using CORE.APP.Features;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -15,6 +16,7 @@ namespace API.Users.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;
@@ -168,6 +170,7 @@ namespace API.Users.Controllers
         /// - 400 Bad Request with a detailed <see cref="CommandResponse"/> if credentials are invalid or model state is incorrect.
         /// </returns>
         [HttpPost, Route("~/api/[action]")] // Resolves to: POST /api/Token
+        [AllowAnonymous]
         public async Task<IActionResult> Token(TokenRequest request)
         {
             // Validate incoming model (username & password) using data annotations
@@ -202,6 +205,7 @@ namespace API.Users.Controllers
         /// </returns>
         [HttpGet]
         [Route("~/api/[action]")] // Resolves to: GET /api/Authorize
+        [AllowAnonymous]
         public IActionResult Authorize()
         {
             // Check if the request's identity (User) is authenticated

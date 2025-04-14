@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MediatR;
 using CORE.APP.Features;
 using APP.Users.Features.Skills;
+using Microsoft.AspNetCore.Authorization;
 
 //Generated from Custom Template.
 namespace API.Users.Controllers
@@ -14,6 +15,7 @@ namespace API.Users.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class SkillsController : ControllerBase
     {
         private readonly ILogger<SkillsController> _logger;
