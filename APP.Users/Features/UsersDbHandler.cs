@@ -1,9 +1,11 @@
 ﻿using APP.Users.Domain;
 using CORE.APP.Features;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace APP.Users.Features
 {
@@ -58,6 +60,42 @@ namespace APP.Users.Features
                 new Claim(ClaimTypes.Role, user.Role.Name),
                 new Claim("Id", user.Id.ToString()) // Custom claim for the user's ID
             };
+        }
+
+        protected virtual string CreateRefreshToken()
+        {
+            var bytes = new byte[32];
+
+            // Way 1:
+            //var randomNumberGenerator = RandomNumberGenerator.Create();
+            //randomNumberGenerator.GetBytes(bytes);
+            //randomNumberGenerator.Dispose();
+
+            // Way 2:
+            using (var randomNumberGenerator = RandomNumberGenerator.Create())
+            {
+                randomNumberGenerator.GetBytes(bytes);
+            }
+
+            return Convert.ToBase64String(bytes);
+        }
+
+        protected virtual ClaimsPrincipal GetPrincipal(string accessToken)
+        {
+            accessToken = accessToken.StartsWith(JwtBearerDefaults.AuthenticationScheme) ?
+                accessToken.Remove(0, JwtBearerDefaults.AuthenticationScheme.Length + 1) : accessToken;
+            var tokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = AppSettings.SigningKey
+            };
+            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken;
+            var principal = jwtSecurityTokenHandler.ValidateToken(accessToken, tokenValidationParameters, out securityToken);
+            return securityToken is null ? null : principal;
         }
     }
 }

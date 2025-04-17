@@ -44,6 +44,8 @@ namespace APP.Users.Features.Users
         /// </summary>
         public string Token { get; set; }
 
+        public string RefreshToken { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenResponse"/> class.
         /// </summary>
@@ -90,6 +92,11 @@ namespace APP.Users.Features.Users
             if (user is null)
                 return new TokenResponse(false, "Active user with the user name and password not found!");
 
+            user.RefreshToken = CreateRefreshToken();
+            user.RefreshTokenExpiration = DateTime.Now.AddDays(AppSettings.RefreshTokenExpirationInDays);
+            _db.Users.Update(user);
+            await _db.SaveChangesAsync(cancellationToken);
+
             // Generate claims and token
             var claims = GetClaims(user);
             var expiration = DateTime.Now.AddMinutes(AppSettings.ExpirationInMinutes);
@@ -98,7 +105,8 @@ namespace APP.Users.Features.Users
             // Return the token in a successful response
             return new TokenResponse(true, "Token created successfully.", user.Id)
             {
-                Token = $"{JwtBearerDefaults.AuthenticationScheme} {token}"
+                Token = $"{JwtBearerDefaults.AuthenticationScheme} {token}",
+                RefreshToken = user.RefreshToken
             };
         }
     }

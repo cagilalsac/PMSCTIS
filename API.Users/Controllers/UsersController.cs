@@ -16,7 +16,7 @@ namespace API.Users.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;
@@ -83,7 +83,7 @@ namespace API.Users.Controllers
         /// </summary>
         /// <param name="request">The request containing the user data to create.</param>
         /// <returns>The result of the user creation, including success or failure.</returns>
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post(UserCreateRequest request)
         {
             try
@@ -111,7 +111,7 @@ namespace API.Users.Controllers
         /// </summary>
         /// <param name="request">The request containing the updated user data.</param>
         /// <returns>The result of the user update, including success or failure.</returns>
-        [HttpPut]
+        [HttpPut, Authorize(Roles = "Admin")]
         public async Task<IActionResult> Put(UserUpdateRequest request)
         {
             try
@@ -139,7 +139,7 @@ namespace API.Users.Controllers
         /// </summary>
         /// <param name="id">The ID of the user to delete.</param>
         /// <returns>The result of the user deletion, including success or failure.</returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -235,6 +235,21 @@ namespace API.Users.Controllers
 
             // Token was not valid or missing — user is unauthenticated
             return BadRequest(new CommandResponse(false, "User not authenticated!"));
+        }
+
+        [HttpPost]
+        [Route("~/api/[action]")] // Resolves to: GET /api/RefreshToken
+        public async Task<IActionResult> RefreshToken(RefreshTokenRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _mediator.Send(request);
+                if (response.IsSuccessful)
+                    return Ok(response);
+                ModelState.AddModelError("UsersRefreshToken", response.Message);
+            }
+            var errorMessages = string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+            return BadRequest(new CommandResponse(false, errorMessages));
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MediatR;
 using CORE.APP.Features;
 using APP.Projects.Features.Works;
+using Microsoft.AspNetCore.Authorization;
 
 //Generated from Custom Template.
 namespace API.Projects.Controllers
@@ -14,6 +15,7 @@ namespace API.Projects.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WorksController : ControllerBase
     {
         private readonly ILogger<WorksController> _logger;
@@ -95,7 +97,7 @@ namespace API.Projects.Controllers
         /// </summary>
         /// <param name="request">The work item creation request.</param>
         /// <returns>The created work item or BadRequest if validation fails.</returns>
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post(WorkCreateRequest request)
         {
             try
@@ -123,7 +125,7 @@ namespace API.Projects.Controllers
         /// </summary>
         /// <param name="request">The work item update request.</param>
         /// <returns>The updated work item or BadRequest if validation fails.</returns>
-        [HttpPut]
+        [HttpPut, Authorize(Roles = "Admin")]
         public async Task<IActionResult> Put(WorkUpdateRequest request)
         {
             try
@@ -151,7 +153,7 @@ namespace API.Projects.Controllers
         /// </summary>
         /// <param name="id">The ID of the work item to delete.</param>
         /// <returns>Success response if deleted or BadRequest if an error occurs.</returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try

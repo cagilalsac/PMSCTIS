@@ -1,5 +1,6 @@
 ﻿using APP.Projects.Features.Tags;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,7 @@ namespace API.Projects.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class TagsController : ControllerBase
     {
         private readonly IMediator _mediator;

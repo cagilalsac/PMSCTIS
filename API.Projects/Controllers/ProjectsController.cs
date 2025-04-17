@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MediatR;
 using CORE.APP.Features;
 using APP.Projects.Features.Projects;
+using Microsoft.AspNetCore.Authorization;
 
 //Generated from Custom Template.
 namespace API.Projects.Controllers
@@ -14,6 +15,7 @@ namespace API.Projects.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProjectsController : ControllerBase
     {
         private readonly ILogger<ProjectsController> _logger;
@@ -93,7 +95,7 @@ namespace API.Projects.Controllers
         /// </summary>
         /// <param name="request">The project creation request containing necessary details.</param>
         /// <returns>The result of the creation operation.</returns>
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post(ProjectCreateRequest request)
         {
             try
@@ -127,7 +129,7 @@ namespace API.Projects.Controllers
         /// </summary>
         /// <param name="request">The request containing the project update details.</param>
         /// <returns>A response indicating the success or failure of the update operation.</returns>
-        [HttpPut]
+        [HttpPut, Authorize(Roles = "Admin")]
         public async Task<IActionResult> Put(ProjectUpdateRequest request)
         {
             try
@@ -159,7 +161,7 @@ namespace API.Projects.Controllers
         /// </summary>
         /// <param name="id">The ID of the project to be deleted.</param>
         /// <returns>A response indicating the success or failure of the deletion operation.</returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try
