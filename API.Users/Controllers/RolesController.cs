@@ -36,7 +36,7 @@ namespace API.Users.Controllers
         /// Retrieves all roles in the system.
         /// </summary>
         /// <returns>A list of roles, or no content if no roles are found.</returns>
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             try

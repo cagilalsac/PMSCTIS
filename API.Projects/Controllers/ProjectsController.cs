@@ -36,7 +36,7 @@ namespace API.Projects.Controllers
         /// Retrieves a list of all projects.
         /// </summary>
         /// <returns>A list of project query responses.</returns>
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             // Optional: Create a cancellation token to control request lifetime.

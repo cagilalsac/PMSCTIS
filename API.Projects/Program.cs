@@ -1,6 +1,9 @@
+using APP.Projects;
 using APP.Projects.Domain;
 using APP.Projects.Features;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,50 @@ var connectionString = builder.Configuration.GetConnectionString("ProjectsDb"); 
 builder.Services.AddDbContext<ProjectsDb>(options => options.UseSqlServer(connectionString)); // define the DbContext with the connection string
 
 builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(ProjectsDbHandler).Assembly)); // for IMediator injection in controllers
+
+
+
+// ======================================================
+// APP SETTINGS
+// ======================================================
+
+// Access the "AppSettings" section from appsettings.json.
+// This section typically holds values like JWT issuer, audience, key, expiration, etc.
+var section = builder.Configuration.GetSection(nameof(AppSettings));
+
+// Bind the configuration section directly to the static AppSettings class.
+// This sets values like Issuer, Audience, SecurityKey used in token creation and validation.
+section.Bind(new AppSettings());
+
+
+
+// ======================================================
+// AUTHENTICATION
+// ======================================================
+
+// Enable JWT Bearer authentication as the default scheme.
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(config =>
+    {
+        // Define rules for validating JWT tokens.
+        config.TokenValidationParameters = new TokenValidationParameters
+        {
+            // Match the token's issuer to the expected issuer from AppSettings.
+            ValidIssuer = AppSettings.Issuer,
+
+            // Match the token's audience to the expected audience.
+            ValidAudience = AppSettings.Audience,
+
+            // Use the symmetric key defined in AppSettings to verify the token's signature.
+            IssuerSigningKey = AppSettings.SigningKey,
+
+            // These flags ensure thorough validation of the token.
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true
+        };
+    });
 
 
 
@@ -44,6 +91,17 @@ if (app.Environment.IsDevelopment())
 
 // Enable HTTPS redirection for the application.
 app.UseHttpsRedirection();
+
+
+
+// ======================================================
+// AUTHENTICATION
+// ======================================================
+
+// Enable authentication middleware so that [Authorize] works.
+app.UseAuthentication();
+
+
 
 // Enable authorization for the application.
 app.UseAuthorization();
