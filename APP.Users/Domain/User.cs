@@ -79,8 +79,16 @@ namespace APP.Users.Domain
             set => UserSkills = value.Select(v => new UserSkill() { SkillId = v }).ToList();
         }
 
+        /// <summary>
+        /// Gets or sets the refresh token assigned to the user.
+        /// This token is used to obtain a new access token without requiring re-authentication.
+        /// </summary>
         public string RefreshToken { get; set; }
 
+        /// <summary>
+        /// Gets or sets the expiration date and time of the refresh token.
+        /// This value determines when the refresh token becomes invalid. A null value implies no expiration is set.
+        /// </summary>
         public DateTime? RefreshTokenExpiration { get; set; }
     }
 }

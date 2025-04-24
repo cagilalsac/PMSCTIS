@@ -62,39 +62,56 @@ namespace APP.Users.Features
             };
         }
 
+        /// <summary>
+        /// Generates a secure, random refresh token encoded in Base64 format.
+        /// This token is typically stored and used to issue a new access token after the current one expires.
+        /// </summary>
+        /// <returns>A Base64-encoded string representing the generated refresh token.</returns>
         protected virtual string CreateRefreshToken()
         {
-            var bytes = new byte[32];
+            var bytes = new byte[32]; // 256-bit token size for strong entropy
 
-            // Way 1:
-            //var randomNumberGenerator = RandomNumberGenerator.Create();
-            //randomNumberGenerator.GetBytes(bytes);
-            //randomNumberGenerator.Dispose();
-
-            // Way 2:
+            // Generate a cryptographically secure random number
             using (var randomNumberGenerator = RandomNumberGenerator.Create())
             {
                 randomNumberGenerator.GetBytes(bytes);
             }
 
+            // Convert the random byte array to a Base64 string
             return Convert.ToBase64String(bytes);
         }
 
+        /// <summary>
+        /// Extracts the <see cref="ClaimsPrincipal"/> from a given JWT access token without validating its expiration.
+        /// This is useful for token renewal scenarios where the token may have expired but still needs to be parsed.
+        /// </summary>
+        /// <param name="accessToken">The JWT access token, optionally prefixed with "Bearer".</param>
+        /// <returns>
+        /// A <see cref="ClaimsPrincipal"/> representing the user’s identity and claims.
+        /// Returns null if the token is invalid or cannot be parsed.
+        /// </returns>
         protected virtual ClaimsPrincipal GetPrincipal(string accessToken)
         {
+            // Remove "Bearer " prefix if present
             accessToken = accessToken.StartsWith(JwtBearerDefaults.AuthenticationScheme) ?
                 accessToken.Remove(0, JwtBearerDefaults.AuthenticationScheme.Length + 1) : accessToken;
-            var tokenValidationParameters = new TokenValidationParameters()
+
+            var tokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = false,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = AppSettings.SigningKey
+                ValidateIssuer = false, // Skips checking the token issuer
+                ValidateAudience = false, // Skips checking the token audience
+                ValidateLifetime = false, // Skips token expiration check
+                ValidateIssuerSigningKey = true, // Ensures the token was signed with a valid key
+                IssuerSigningKey = AppSettings.SigningKey // The key used to validate the signature
             };
+
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
+
+            // Validate the token and extract claims
             var principal = jwtSecurityTokenHandler.ValidateToken(accessToken, tokenValidationParameters, out securityToken);
+
+            // Return null if token is invalid; otherwise return principal
             return securityToken is null ? null : principal;
         }
     }

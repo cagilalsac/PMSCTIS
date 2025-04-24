@@ -237,18 +237,42 @@ namespace API.Users.Controllers
             return BadRequest(new CommandResponse(false, "User not authenticated!"));
         }
 
+        /// <summary>
+        /// Handles the refresh token request by validating the input model and forwarding it to the mediator.
+        /// If the operation is successful, returns HTTP 200 (OK) with the response.
+        /// If validation fails or the operation is unsuccessful, returns HTTP 400 (Bad Request) with error messages.
+        /// </summary>
+        /// <param name="request">The refresh token request containing necessary token data.</param>
+        /// <returns>
+        /// IActionResult indicating the result of the operation:
+        /// - 200 OK with response if successful
+        /// - 400 Bad Request with error messages otherwise
+        /// </returns>
         [HttpPost]
-        [Route("~/api/[action]")] // Resolves to: GET /api/RefreshToken
+        [Route("~/api/[action]")] // Maps to: POST /api/RefreshToken
+        [AllowAnonymous]
         public async Task<IActionResult> RefreshToken(RefreshTokenRequest request)
         {
+            // Check if the model passed in the request is valid according to the data annotations
             if (ModelState.IsValid)
             {
+                // Forward the request to the mediator for processing
                 var response = await _mediator.Send(request);
+
+                // If the mediator operation succeeded, return an OK response
                 if (response.IsSuccessful)
                     return Ok(response);
+
+                // If it failed, register the error message under a specific key
                 ModelState.AddModelError("UsersRefreshToken", response.Message);
             }
-            var errorMessages = string.Join("|", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+
+            // Gather all error messages from the model state
+            var errorMessages = string.Join("|", ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage));
+
+            // Return a bad request with a concatenated string of all error messages
             return BadRequest(new CommandResponse(false, errorMessages));
         }
     }

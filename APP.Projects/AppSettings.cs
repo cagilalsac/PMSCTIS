@@ -34,6 +34,13 @@ namespace APP.Projects
         /// </summary>
         public static SecurityKey SigningKey => new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecurityKey));
 
+        /// <summary>
+        /// Gets or sets the number of days after which a refresh token expires.
+        /// This value is used to determine token validity duration during authentication flows.
+        /// </summary>
+        /// <value>
+        /// An integer representing the number of days until the refresh token is considered expired.
+        /// </value>
         public static int RefreshTokenExpirationInDays { get; set; }
     }
 }

@@ -44,7 +44,13 @@ namespace APP.Users.Features.Users
         /// </summary>
         public string Token { get; set; }
 
-        public string RefreshToken { get; set; }
+        // REFRESH TOKEN
+        /// <summary>
+        /// Gets or sets the refresh token assigned to the user.
+        /// This token is used to request a new access token without requiring re-authentication,
+        /// typically after the original access token has expired.
+        /// </summary>
+        public string RefreshToken { get; set; } 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenResponse"/> class.
@@ -92,6 +98,8 @@ namespace APP.Users.Features.Users
             if (user is null)
                 return new TokenResponse(false, "Active user with the user name and password not found!");
 
+            // REFRESH TOKEN
+            // Generate refresh token and save it to the Users table for the retrieved user
             user.RefreshToken = CreateRefreshToken();
             user.RefreshTokenExpiration = DateTime.Now.AddDays(AppSettings.RefreshTokenExpirationInDays);
             _db.Users.Update(user);
@@ -102,11 +110,13 @@ namespace APP.Users.Features.Users
             var expiration = DateTime.Now.AddMinutes(AppSettings.ExpirationInMinutes);
             var token = CreateAccessToken(claims, expiration);
 
-            // Return the token in a successful response
+            // Return the token and refresh token in a successful response
             return new TokenResponse(true, "Token created successfully.", user.Id)
             {
                 Token = $"{JwtBearerDefaults.AuthenticationScheme} {token}",
-                RefreshToken = user.RefreshToken
+
+                // REFRESH TOKEN
+                RefreshToken = user.RefreshToken 
             };
         }
     }
